@@ -1,59 +1,553 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PHP_Laravel12_Crud_using_LiveWire
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+The main purpose of this project is to perform CRUD operations (Create, Read, Update, Delete) on posts without page reload using Livewire.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Livewire helps to create dynamic and interactive UI using Blade and PHP only, without writing JavaScript.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Project Highlights:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### This project is useful for beginners to understand:
 
-## Learning Laravel
+Laravel MVC structure
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Livewire components
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Database operations using Eloquent ORM
 
-## Laravel Sponsors
+Real-time UI updates without page refresh
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Technologies Used
 
-## Contributing
+PHP 8+
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Laravel 12
 
-## Code of Conduct
+Livewire
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+MySQL
 
-## Security Vulnerabilities
+Bootstrap 4
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Blade Template Engine
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+# Project SetUp
+
+---
+
+## STEP 1: Create Laravel 12 Project
+
+Command:
+
+```
+composer create-project laravel/laravel PHP_Laravel12_Crud_using_LiveWire "12.*"
+```
+
+Go inside project:
+```
+cd PHP_Laravel12_Crud_using_LiveWire
+```
+
+Run server:
+```
+php artisan serve
+```
+
+Explanation:
+
+Creates a fresh Laravel 12 project
+This sets up a fresh Laravel 12 project.
+
+
+
+
+
+## STEP 2: Configure Database
+
+### Open .env
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=livewire_crud
+DB_USERNAME=root
+DB_PASSWORD=
+
+```
+
+Create database in phpMyAdmin:
+```
+livewire_crud
+```
+
+Explanation:
+
+Connects Laravel to your MySQL database
+
+Make sure export_api_db exists in phpMyAdmin
+
+
+
+## STEP 3: Create Model + Migration
+
+We will export posts data.
+
+### Command:
+
+
+```
+
+php artisan make:model Post -m
+
+```
+
+Explanation:
+
+Creates Post model → app/Models/Post.php
+
+Creates Migration → database/migrations/xxxx_create_posts_table.php
+
+
+
+### Migration File
+
+ database/migrations/xxxx_create_posts_table.php
+```
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('body');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('posts');
+    }
+};
+
+```
+
+
+### Run migration:
+```
+php artisan migrate
+
+```
+
+Explanation:
+
+Creates posts table in database
+
+
+
+### app/model/Post.php
+
+```
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    use HasFactory;
+
+    protected $fillable = ['title', 'body'];
+}
+
+```
+
+
+
+
+## Step 4: Install Livewire
+
+Run Command:
+
+```
+composer require livewire/livewire
+
+```
+
+## Step 5: Create Livewire Component
+
+Run Command:
+
+```
+php artisan make:livewire posts
+
+```
+
+This creates:
+
+app/Livewire/Posts.php
+resources/views/livewire/posts.blade.php
+
+
+## Step 6: Add Logic to Livewire Component
+
+### Edit:
+
+```
+
+<?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use App\Models\Post;
+
+class Posts extends Component
+{
+    public $posts, $title, $body, $post_id;
+    public $updateMode = false;
+
+    public function render()
+    {
+        $this->posts = Post::all();
+        return view('livewire.posts');
+    }
+
+    private function resetInput()
+    {
+        $this->title = '';
+        $this->body = '';
+    }
+
+    public function store()
+    {
+        $validated = $this->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+
+        Post::create($validated);
+
+        session()->flash('message', 'Post Created Successfully.');
+        $this->resetInput();
+    }
+
+    public function edit($id)
+    {
+        $post = Post::findOrFail($id);
+        $this->post_id = $id;
+        $this->title = $post->title;
+        $this->body = $post->body;
+        $this->updateMode = true;
+    }
+
+    public function cancel()
+    {
+        $this->updateMode = false;
+        $this->resetInput();
+    }
+
+    public function update()
+    {
+        $validated = $this->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+
+        $post = Post::find($this->post_id);
+        $post->update($validated);
+
+        session()->flash('message', 'Post Updated Successfully.');
+        $this->updateMode = false;
+        $this->resetInput();
+    }
+
+    public function delete($id)
+    {
+        Post::find($id)->delete();
+        session()->flash('message', 'Post Deleted Successfully.');
+    }
+}
+
+```
+
+This handles reading, creating, editing, updating, and deleting posts with Livewire.
+
+
+
+
+## Step 7: Create Blade Views
+
+### resources/views/livewire/posts.blade.php
+
+```
+<div>
+    @if (session()->has('message'))
+        <div class="alert alert-success">{{ session('message') }}</div>
+    @endif
+
+    @if($updateMode)
+        @include('livewire.update')
+    @else
+        @include('livewire.create')
+    @endif
+
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Title</th>
+                <th>Body</th>
+                <th width="150px">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($posts as $post)
+            <tr>
+                <td>{{ $post->id }}</td>
+                <td>{{ $post->title }}</td>
+                <td>{{ $post->body }}</td>
+                <td>
+                    <button wire:click="edit({{ $post->id }})" class="btn btn-primary btn-sm">Edit</button>
+<button
+    class="btn btn-danger btn-sm"
+    onclick="confirm('Are you sure you want to delete this post?') || event.stopImmediatePropagation()"
+    wire:click="delete({{ $post->id }})"
+>
+    Delete
+</button>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+```
+
+
+### resources/views/livewire/create.blade.php
+
+```
+
+<form>
+    <div class="form-group">
+        <label>Title:</label>
+        <input type="text" class="form-control" wire:model="title">
+        @error('title') <span class="text-danger">{{ $message }}</span>@enderror
+    </div>
+
+    <div class="form-group">
+        <label>Body:</label>
+        <textarea class="form-control" wire:model="body"></textarea>
+        @error('body') <span class="text-danger">{{ $message }}</span>@enderror
+    </div>
+
+    <button wire:click.prevent="store()" class="btn btn-success">Save</button>
+</form>
+
+```
+
+### 
+
+
+### resources/views/livewire/update.blade.php
+
+```
+
+<form>
+    <div class="form-group">
+        <label>Title:</label>
+        <input type="text" class="form-control" wire:model="title">
+        @error('title') <span class="text-danger">{{ $message }}</span>@enderror
+    </div>
+
+    <div class="form-group">
+        <label>Body:</label>
+        <textarea class="form-control" wire:model="body"></textarea>
+        @error('body') <span class="text-danger">{{ $message }}</span>@enderror
+    </div>
+
+    <button wire:click.prevent="update()" class="btn btn-dark">Update</button>
+    <button wire:click.prevent="cancel()" class="btn btn-danger">Cancel</button>
+</form>
+
+```
+
+### resources/views/posts.blade.php
+
+```
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laravel 12 Livewire CRUD</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    @livewireStyles
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Laravel 12 Livewire CRUD</h2>
+
+        <livewire:posts />
+    </div>
+
+    @livewireScripts
+</body>
+</html>
+
+```
+
+
+## STEP 8: Routes
+
+### File: routes/web.php
+
+Defines routes :
+
+```
+
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('posts'); 
+});
+
+```
+
+
+## Step 9:Run Your Laravel App
+
+### Start the development server:
+
+```
+php artisan serve
+
+```
+
+### Then open in browser:
+
+```
+ http://localhost:8000
+
+```
+
+
+## So you can see this type output:
+
+### Posts Page:
+
+
+<img width="1919" height="962" alt="Screenshot 2026-01-07 164535" src="https://github.com/user-attachments/assets/8cee5b32-9557-4418-8a1f-eec940b57846" />
+
+
+### Posts Page(Error show):
+
+
+<img width="1912" height="971" alt="Screenshot 2026-01-07 164703" src="https://github.com/user-attachments/assets/31ff73c4-aefa-46dd-a2b6-061d187cd7fd" />
+
+
+### Create Page:
+
+
+<img width="1919" height="963" alt="Screenshot 2026-01-07 164729" src="https://github.com/user-attachments/assets/ccf4bad0-6fba-42ac-8975-726adf04507c" />
+
+
+(after create success message show)
+
+<img width="1919" height="964" alt="Screenshot 2026-01-07 164740" src="https://github.com/user-attachments/assets/95c0a375-841d-4b74-84c3-d5bd3d358eae" />
+
+
+
+### Edit Page:
+
+
+<img width="1919" height="966" alt="Screenshot 2026-01-07 164806" src="https://github.com/user-attachments/assets/eb0e0dca-fe35-4713-a52b-2f7e4748b444" />
+
+(after update success message show)
+
+<img width="1919" height="973" alt="Screenshot 2026-01-07 164818" src="https://github.com/user-attachments/assets/2c68778f-df5e-4ae7-9f85-a9135f35be22" />
+
+
+
+### Delete Page:
+
+
+<img width="1913" height="965" alt="Screenshot 2026-01-07 165242" src="https://github.com/user-attachments/assets/cd11d530-9e43-4cea-bd38-b010f736675d" />
+
+
+
+---
+
+
+# Project Folder Structure:
+
+```
+
+PHP_Laravel12_Crud_using_LiveWire
+│
+├── app
+│   ├── Livewire
+│   │   └── Posts.php
+│   ├── Models
+│   │   └── Post.php
+│   └── Providers
+│
+├── bootstrap
+│   └── app.php
+│
+├── config
+│   └── (all config files)
+│
+├── database
+│   ├── migrations
+│   │   └── xxxx_xx_xx_create_posts_table.php
+│   ├── seeders
+│   └── factories
+│
+├── public
+│   └── index.php
+│
+├── resources
+│   ├── views
+│   │   ├── livewire
+│   │   │   ├── posts.blade.php
+│   │   │   ├── create.blade.php
+│   │   │   └── update.blade.php
+│   │   └── posts.blade.php
+│   ├── css
+│   └── js
+│
+├── routes
+│   └── web.php
+│
+├── storage
+│   └── (logs, cache, sessions)
+│
+├── tests
+│
+├── .env
+├── artisan
+├── composer.json
+├── package.json
+└── README.md
+
+```
