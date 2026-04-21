@@ -1,14 +1,28 @@
 <form>
     <div class="form-group">
         <label>Title:</label>
-        <input type="text" class="form-control" wire:model="title">
-        @error('title') <span class="text-danger">{{ $message }}</span>@enderror
+        <input type="text" class="form-control" wire:model.live="title">
+
+        <small class="text-muted">
+            {{ strlen($title ?? '') }} characters
+        </small>
+
+        @error('title') 
+            <span class="text-danger d-block">{{ $message }}</span> 
+        @enderror
     </div>
 
     <div class="form-group">
         <label>Body:</label>
-        <textarea class="form-control" wire:model="body"></textarea>
-        @error('body') <span class="text-danger">{{ $message }}</span>@enderror
+        <textarea class="form-control" wire:model.live="body"></textarea>
+
+        <small class="text-muted">
+            {{ strlen($body ?? '') }} characters
+        </small>
+
+        @error('body') 
+            <span class="text-danger d-block">{{ $message }}</span> 
+        @enderror
     </div>
 
     <button wire:click.prevent="update()" class="btn btn-dark">Update</button>

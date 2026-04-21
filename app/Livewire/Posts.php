@@ -3,17 +3,52 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\Post;
 
 class Posts extends Component
 {
-    public $posts, $title, $body, $post_id;
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
+    public $title, $body, $post_id;
     public $updateMode = false;
+    public $search = '';
+    public $sortDirection = 'ASC';
+
+    //  Validation rules
+    protected $rules = [
+        'title' => 'required|min:3',
+        'body' => 'required|min:4',
+    ];
+
+    //  Real-time validation
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
+    }
+
+    //  Reset pagination when search
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    // Toggle sorting
+    public function toggleSort()
+    {
+        $this->sortDirection = $this->sortDirection === 'ASC' ? 'DESC' : 'ASC';
+    }
 
     public function render()
     {
-        $this->posts = Post::all();
-        return view('livewire.posts');
+        $posts = Post::where('title', 'like', '%' . $this->search . '%')
+            ->orWhere('body', 'like', '%' . $this->search . '%')
+            ->orderBy('id', $this->sortDirection)
+            ->paginate(5);
+
+        return view('livewire.posts', compact('posts'));
     }
 
     private function resetInput()
@@ -24,10 +59,7 @@ class Posts extends Component
 
     public function store()
     {
-        $validated = $this->validate([
-            'title' => 'required',
-            'body' => 'required',
-        ]);
+        $validated = $this->validate();
 
         Post::create($validated);
 
@@ -52,10 +84,7 @@ class Posts extends Component
 
     public function update()
     {
-        $validated = $this->validate([
-            'title' => 'required',
-            'body' => 'required',
-        ]);
+        $validated = $this->validate();
 
         $post = Post::find($this->post_id);
         $post->update($validated);
