@@ -152,4 +152,4 @@ class Posts extends Component
         $this->selectedPosts = [];
         $this->dispatch('toast', type: 'success', message: 'Selected Posts Deleted.');
     }
-}
+} 
